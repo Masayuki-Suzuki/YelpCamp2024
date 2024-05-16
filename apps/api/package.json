@@ -1,0 +1,29 @@
+{
+    "name": "api",
+    "engines": {
+        "npm": "use yarn instead",
+        "yarn": "4.2.2"
+    },
+    "license": "No License",
+    "packageManager": "yarn@4.2.2",
+    "type": "module",
+    "main": "./src/app.ts",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "start": "vite preview"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "16.4.5",
+        "express": "^4.19.2"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.21",
+        "@types/node": "^20.12.12",
+        "ts-node": "10.9.2",
+        "typescript": "^5.4.5",
+        "vite": "^5.2.11",
+        "vite-plugin-node": "^3.1.0"
+    }
+}

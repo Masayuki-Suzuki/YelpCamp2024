@@ -1,0 +1,5 @@
+{
+    "extends": "../../packages/typescript-config/base.json",
+    "transformMixedEsModules": true,
+    "exclude": ["node_modules"],
+}
