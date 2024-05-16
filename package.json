@@ -1,24 +1,24 @@
 {
-  "name": "yelpcamp2024",
-  "private": true,
-  "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
-  },
-  "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
-    "prettier": "^3.2.5",
-    "turbo": "latest"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "packageManager": "yarn@4.2.2",
-  "workspaces": [
-    "/apps/*",
-    "/packages/*"
-  ]
+    "name": "yelpcamp2024",
+    "private": true,
+    "scripts": {
+        "build": "turbo build",
+        "dev": "turbo dev",
+        "lint": "turbo lint",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    },
+    "devDependencies": {
+        "@repo/eslint-config": "workspace:packages/eslint-config",
+        "@repo/typescript-config": "workspace:packages/typescript-config",
+        "prettier": "^3.2.5",
+        "turbo": "latest"
+    },
+    "engines": {
+        "node": ">=18"
+    },
+    "packageManager": "yarn@4.2.2",
+    "workspaces": [
+        "/apps/*",
+        "/packages/*"
+    ]
 }
