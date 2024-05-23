@@ -23,6 +23,7 @@ model User {
   createdAt DateTime     @default(now())
   profile   Profile?
   posts     CampGround[]
+  password  String
 }
 
 model Profile {
@@ -40,6 +41,7 @@ model CampGround {
   location    String
   author      User   @relation(fields: [authorId], references: [id])
   authorId    String @db.ObjectId
+  image       String
 }
 
 enum Role {

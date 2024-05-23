@@ -1,34 +1,28 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import { initialiseDatabase } from './database.js'
+import { routerConfigs } from './routes/index.js'
 
 dotenv.config()
 
 const app = express()
+const router = express.Router()
 const { PORT } = process.env
 
-app.get('/', (req, res) => {
-    res.status(200).send('Hello World!!')
-})
-
 const initServer = async () => {
+    const app = express()
+
     await initialiseDatabase()
 
-    app.get('/', (req, res) => {
-        res.status(200).send('Hello World!')
-    })
+    routerConfigs(app)
 
-    app.listen(process.env.PORT, () => {
-        console.log(`Server running at http://localhost:${process.env.PORT}`)
+    app.listen(PORT, () => {
+        console.log(`Server running at http://localhost:${PORT}`)
     }).on('error', (error) => {
         throw new Error(error.message)
     })
 }
 
-if (import.meta.env.PROD) {
-    app.listen(PORT, () => {
-        console.log(`Server listening on port ${PORT}!!`)
-    })
-}
+void initServer()
 
 export const viteNodeApp = app

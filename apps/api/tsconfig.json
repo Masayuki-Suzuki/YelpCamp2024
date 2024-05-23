@@ -2,5 +2,18 @@
     "extends": "../../packages/typescript-config/base.json",
     "transformMixedEsModules": true,
     "allowImportingTsExtension": true,
+    "include": ["src/**/*"],
     "exclude": ["node_modules"],
+    "compilerOptions": {
+        "module": "ESNext",
+        "esModuleInterop": true,
+        "strict": true,
+        "types": [
+            "@types/node"
+        ]
+    },
+    "ts-node": {
+        "esm": true,
+        "experimentalSpecifierResolution": "node"
+    }
 }
