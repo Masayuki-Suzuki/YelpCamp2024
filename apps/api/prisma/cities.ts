@@ -1,4 +1,16 @@
-const cities = [
+export type City = {
+    city: string
+    growth_from_2000_to_2013: string
+    latitude: number
+    longitude: number
+    population: string
+    rank: string
+    state: string
+}
+
+export type Cities = City[]
+
+const cities: Cities = [
     {
         city: 'New York',
         growth_from_2000_to_2013: '4.8%',

@@ -6,7 +6,6 @@ import { routerConfigs } from './routes/index.js'
 dotenv.config()
 
 const app = express()
-const router = express.Router()
 const { PORT } = process.env
 
 const initServer = async () => {

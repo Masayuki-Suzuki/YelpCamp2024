@@ -1,7 +1,8 @@
 import * as Prisma from '@prisma/client/index'
-import { CampGround, User } from '@prisma/client'
-import cities from './cities.js'
+import { User } from '@prisma/client'
+import cities, { City } from './cities.js'
 import { descriptors, places } from './seedHelpers.js'
+import { Campground } from '../src/types/database/campground.js'
 
 const { PrismaClient } = Prisma
 const prisma = new PrismaClient()
@@ -74,7 +75,7 @@ const campgroundSeed = async () => {
 
         console.info('Creating camp grounds seed data...')
 
-        let campGrounds: CampGround[] = []
+        let campGrounds: Campground[] = []
         const getRandomTitle = (ary: string[]) => ary[Math.floor(Math.random() * ary.length)]
         const getRandomPrice = (min = 10, max = 300) => Math.floor(Math.random() * (max - min + 1) + min)
 
@@ -96,35 +97,45 @@ const campgroundSeed = async () => {
             }
         }
 
+        console.info('Found test user...')
         console.log(testUser)
 
+        console.info('Creating 50 campgrounds...')
         for (let i = 0; i < 50; i++) {
             const random1000 = Math.floor(Math.random() * 1000)
-            const author = testUser ? { id: testUser.id } : undefined
+            const authorId = testUser ? testUser.id : null
 
-            const campGround: CampGround = {
-                location: `${cities[random1000].city}, ${cities[random1000].state}`,
+            const cityData: City | undefined = cities[random1000]
+
+            let location = ''
+
+            if (cityData) {
+                location = `${cityData.city}, ${cityData.state}`
+            }
+
+            const campGround: Campground = {
+                location,
+                authorId,
                 title: `${getRandomTitle(descriptors)} ${getRandomTitle(places)}`,
                 price: getRandomPrice(),
                 description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor' +
                     ' incididunt ut labore et dolore magna',
-                image: 'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800',
-                authorId: author ? author.id : undefined
+                image: 'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800'
             }
             campGrounds.push(campGround)
         }
 
+        console.info('Pushing campgrounds to database...')
         try {
-            console.info('Creating camp grounds...')
             const createdCampGrounds = await prisma.campGround.createMany({
                 data: campGrounds
             })
 
-            console.info('Camp grounds created successfully.')
+            console.info('Campgrounds created successfully.')
             console.log(createdCampGrounds)
         }
         catch (e) {
-            console.error('Error creating camp grounds...')
+            console.error('Error creating campgrounds...')
             if (e instanceof Error) {
                 console.error(e.message)
             } else {
