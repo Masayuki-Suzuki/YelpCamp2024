@@ -1,4 +1,4 @@
-import { FetchStatus } from './utilities.ts'
+import { FetchStatus, Nullable } from './utilities.ts'
 
 export type Campground = {
     id?: string,
@@ -14,6 +14,7 @@ export type Campgrounds = Campground[]
 
 export type CampgroundsState = {
     campgrounds: Campgrounds,
+    campground: Nullable<Campground>,
     isLoading: boolean,
     status: FetchStatus
 }

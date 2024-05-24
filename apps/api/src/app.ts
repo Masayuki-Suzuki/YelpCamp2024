@@ -1,5 +1,6 @@
 import express from 'express'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import { initialiseDatabase } from './database.js'
 import { routerConfigs } from './routes/index.js'
 
@@ -12,6 +13,12 @@ const initServer = async () => {
     const app = express()
 
     await initialiseDatabase()
+
+    app.use(cors({
+        origin: 'http://localhost:3000',
+        credentials: true,
+        optionsSuccessStatus: 200
+    }))
 
     routerConfigs(app)
 
