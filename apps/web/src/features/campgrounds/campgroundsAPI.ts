@@ -1,16 +1,17 @@
-import { Campground, Campgrounds } from '../../types/campground'
+import { Campground, Campgrounds, CampgroundPostData } from '../../types/campground'
 import apiClient from '../../libs/apiClient'
 
 export const fetchCampgrounds = async (): Promise<Campgrounds> => {
-    const res = await apiClient.get('/campgrounds')
-    return res.data
+    const { data } = await apiClient.get('/campgrounds')
+    return data
 }
 
 export const fetchCampground = async (id: string): Promise<Campground> => {
-    const res = await apiClient.get(`/campgrounds/${id}`)
-    return res.data
+    const { data } = await apiClient.get(`/campgrounds/${id}`)
+    return data
 }
 
-export const createCampground = async (campground: Campground): Promise<void> => {
-    await apiClient.post('/campgrounds', campground)
+export const createCampground = async (postData: CampgroundPostData): Promise<Campground> => {
+    const { data } = await apiClient.post('/campgrounds/create', postData)
+    return data
 }

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { CampgroundsState } from '../../types/campground.ts'
-import { fetchCampgrounds, fetchCampground } from './campgroundsAPI'
+import { CampgroundPostData, CampgroundsState } from '../../types/campground.ts'
+import { fetchCampgrounds, fetchCampground, createCampground } from './campgroundsAPI'
 
 const initialState: CampgroundsState = {
     campgrounds: [],
@@ -25,22 +25,30 @@ export const fetchOneCampground = createAsyncThunk(
     }
 )
 
+export const pushNewCampground = createAsyncThunk(
+    'campgrounds/createCampground',
+    async (postData: CampgroundPostData) => {
+        const newCampground = await createCampground(postData)
+        return newCampground
+    }
+)
+
 const campgroundsSlice = createSlice({
     name: 'campgrounds',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-           .addCase(fetchAllCampgrounds.pending, (state) => {
+            .addCase(fetchAllCampgrounds.pending, (state) => {
                 state.status = 'loading'
                 state.isLoading = true
             })
-           .addCase(fetchAllCampgrounds.fulfilled, (state, action) => {
+            .addCase(fetchAllCampgrounds.fulfilled, (state, action) => {
                 state.status = 'idle'
                 state.isLoading = false
                 state.campgrounds = action.payload
             })
-           .addCase(fetchAllCampgrounds.rejected, (state) => {
+            .addCase(fetchAllCampgrounds.rejected, (state) => {
                 state.status = 'failed'
                 state.isLoading = false
             })
@@ -56,6 +64,19 @@ const campgroundsSlice = createSlice({
             .addCase(fetchOneCampground.rejected, (state) => {
                 state.status = 'failed'
                 state.isLoading = false
+            })
+            .addCase(pushNewCampground.pending, (state) => {
+                state.status = 'loading'
+                state.isLoading = true
+            })
+            .addCase(pushNewCampground.rejected, (state) => {
+                state.status = 'failed'
+                state.isLoading = false
+            })
+            .addCase(pushNewCampground.fulfilled, (state, action) => {
+                state.status = 'idle'
+                state.isLoading = false
+                state.campgrounds.push(action.payload)
             })
     }
 })

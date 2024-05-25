@@ -3,6 +3,7 @@ import { User } from '@prisma/client'
 import cities, { City } from './cities.js'
 import { descriptors, places } from './seedHelpers.js'
 import { Campground } from '../src/types/database/campground.js'
+import { Nullable } from '../src/types/utilities.js'
 
 const { PrismaClient } = Prisma
 const prisma = new PrismaClient()
@@ -80,7 +81,8 @@ const campgroundSeed = async () => {
         const getRandomPrice = (min = 10, max = 300) => Math.floor(Math.random() * (max - min + 1) + min)
 
         console.info('Getting test user...')
-        let testUser: User | undefined | null = null
+
+        let testUser: User | null = null
 
         try {
             testUser = await prisma.user.findUnique({
@@ -95,57 +97,73 @@ const campgroundSeed = async () => {
             } else {
                 console.error(e)
             }
+            prisma.$disconnect()
+            return
         }
 
-        console.info('Found test user...')
-        console.log(testUser)
+        if (testUser) {
+            console.info('Found test user...')
+            console.log(testUser)
 
-        console.info('Creating 50 campgrounds...')
-        for (let i = 0; i < 50; i++) {
-            const random1000 = Math.floor(Math.random() * 1000)
-            const authorId = testUser ? testUser.id : null
+            const id = testUser.id
 
-            const cityData: City | undefined = cities[random1000]
+            console.info('Creating 50 campgrounds...')
+            for (let i = 0; i < 50; i++) {
+                const random1000 = Math.floor(Math.random() * 1000)
 
-            let location = ''
+                const cityData: City | undefined = cities[random1000]
 
-            if (cityData) {
-                location = `${cityData.city}, ${cityData.state}`
+                let location = ''
+
+                if (cityData) {
+                    location = `${cityData.city}, ${cityData.state}`
+                }
+
+                const campGround: Campground = {
+                    location,
+                    authorId: id,
+                    title: `${getRandomTitle(descriptors)} ${getRandomTitle(places)}`,
+                    price: getRandomPrice(),
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor' +
+                        ' incididunt ut labore et dolore magna',
+                    image: 'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800'
+                }
+                campGrounds.push(campGround)
             }
 
-            const campGround: Campground = {
-                location,
-                authorId,
-                title: `${getRandomTitle(descriptors)} ${getRandomTitle(places)}`,
-                price: getRandomPrice(),
-                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor' +
-                    ' incididunt ut labore et dolore magna',
-                image: 'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800'
-            }
-            campGrounds.push(campGround)
-        }
+            console.info('Pushing campgrounds to database...')
 
-        console.info('Pushing campgrounds to database...')
-        try {
-            const createdCampGrounds = await prisma.campGround.createMany({
-                data: campGrounds
-            })
+            try {
+                const createdCampGrounds = await prisma.campGround.createMany({
+                    data: campGrounds
+                })
 
-            console.info('Campgrounds created successfully.')
-            console.log(createdCampGrounds)
-        }
-        catch (e) {
-            console.error('Error creating campgrounds...')
-            if (e instanceof Error) {
-                console.error(e.message)
-            } else {
-                console.error(e)
+                if (createdCampGrounds) {
+                    console.info('Campgrounds created successfully.')
+                    console.log(createdCampGrounds)
+                } else {
+                    console.error(`Error: couldn't update test user with campgrounds seed...`)
+                    console.log('Please check seeder code...')
+                }
             }
+            catch (e) {
+                console.error('Error creating campgrounds...')
+                if (e instanceof Error) {
+                    console.error(e.message)
+                } else {
+                    console.error(e)
+                }
+
+                console.info('Disconnecting from database...')
+                prisma.$disconnect()
+            }
+        } else {
+            console.error('Error: finding test user...')
+            console.log('Please check userSeed function ran properly.')
 
             console.info('Disconnecting from database...')
             prisma.$disconnect()
         }
-
     }
     catch (e) {
         if (e instanceof Error) {
@@ -157,8 +175,9 @@ const campgroundSeed = async () => {
     }
 }
 
-void userSeed()
-void campgroundSeed()
+userSeed().then(() => {
+    void campgroundSeed()
+})
 
 console.info('Seeding complete.')
 prisma.$disconnect()

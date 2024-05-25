@@ -34,13 +34,13 @@ model Profile {
 }
 
 model CampGround {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   price       Int
   description String
   location    String
-  author      User?   @relation(fields: [authorId], references: [id])
-  authorId    String? @db.ObjectId
+  author      User   @relation(fields: [authorId], references: [id])
+  authorId    String @db.ObjectId
   image       String
 }
 

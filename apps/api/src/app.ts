@@ -20,6 +20,8 @@ const initServer = async () => {
         optionsSuccessStatus: 200
     }))
 
+    app.use(express.json())
+
     routerConfigs(app)
 
     app.listen(PORT, () => {

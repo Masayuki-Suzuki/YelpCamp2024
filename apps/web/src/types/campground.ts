@@ -6,7 +6,6 @@ export type Campground = {
     price: number,
     description: string,
     location: string,
-    authorId: string | null,
     image: string
 }
 
@@ -17,4 +16,9 @@ export type CampgroundsState = {
     campground: Nullable<Campground>,
     isLoading: boolean,
     status: FetchStatus
+}
+
+export type CampgroundPostData = {
+    authorId: string,
+    data: Campground
 }
