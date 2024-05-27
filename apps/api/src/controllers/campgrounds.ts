@@ -20,7 +20,6 @@ export const getOneCampGround = async (req: Request, res: Response) => {
                 id
             }
         })
-        console.log(campGround)
         res.status(200).json(campGround)
     }
     catch (error) {
@@ -70,11 +69,58 @@ export const createCampground = async (req: Request, res: Response) => {
     }
 }
 
+export const updateCampground = async (req: Request, res: Response) => {
+    try {
+        const { data, postId: id } = req.body
+
+        const post = await prisma.campGround.findUnique({
+            where: {
+                id
+            }
+        })
+
+        if (post) {
+            res.status(200).json({
+                data: {
+                    post,
+                    sentData: data
+                },
+                message: `Post hasn't been updated yet because of testing.`
+            })
+        } else {
+            res.status(404).json({
+                message: 'Post not found',
+                postID: id,
+                data: post
+            })
+        }
+
+    }
+    catch (error) {
+        simpleError(res, error)
+    }
+}
+
 export const getCampgroundAuthor = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
-        const author = await prisma.campGround.findUnique({ where: { id }, include: { author: true } })
-        res.status(200).json(author)
+        const post = await prisma.campGround.findUnique({ where: { id }, include: { author: true } })
+
+        if (post) {
+            if (post.author) {
+                res.status(200).json(post.author)
+            } else {
+                res.status(404).json({
+                    message: `Post author not found and/or Campground doesn't have an author.`,
+                    data: post
+                })
+            }
+        } else {
+            res.status(404).json({
+                message: 'Post not found',
+                data: post
+            })
+        }
     }
     catch (error) {
         simpleError(res, error)

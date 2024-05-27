@@ -2,11 +2,11 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link as ReactRouterLink } from'react-router-dom'
 import { Box, Heading, Link, ListItem, Text, UnorderedList } from '@chakra-ui/react'
-import { selectCampgrounds, selectCampgroundsLoading, selectCampgroundsStatus } from '../features/campgrounds'
-import { fetchAllCampgrounds } from '../features/campgrounds'
-import { AppDispatch } from '../store'
-import { FetchStatus } from '../types/utilities'
-import { Campgrounds } from '../types/campground'
+import { selectCampgrounds, selectCampgroundsLoading, selectCampgroundsStatus } from '../../features/campgrounds'
+import { fetchAllCampgrounds } from '../../features/campgrounds'
+import { AppDispatch } from '../../store'
+import { FetchStatus } from '../../types/utilities'
+import { Campgrounds } from '../../types/campground'
 
 type ListProps = {
     loading: boolean

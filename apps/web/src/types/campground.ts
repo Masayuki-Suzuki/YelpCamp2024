@@ -22,3 +22,16 @@ export type CampgroundPostData = {
     authorId: string,
     data: Campground
 }
+
+export type CampgroundUpdateData = {
+    id: string,
+    data: Campground
+}
+
+export type CampgroundForm = {
+    title: string,
+    price: number,
+    description: string,
+    location: string,
+    image: string
+}

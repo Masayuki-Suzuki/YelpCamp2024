@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { CampgroundPostData, CampgroundsState } from '../../types/campground.ts'
-import { fetchCampgrounds, fetchCampground, createCampground } from './campgroundsAPI'
+import { CampgroundPostData, CampgroundsState, CampgroundUpdateData } from '../../types/campground.ts'
+import { fetchCampgrounds, fetchCampground, createCampground, updateCampground } from './campgroundsAPI'
 
 const initialState: CampgroundsState = {
     campgrounds: [],
@@ -30,6 +30,14 @@ export const pushNewCampground = createAsyncThunk(
     async (postData: CampgroundPostData) => {
         const newCampground = await createCampground(postData)
         return newCampground
+    }
+)
+
+export const updateOneCampground = createAsyncThunk(
+    'campgrounds/updateCampground',
+    async (postData: CampgroundUpdateData) => {
+        const updatedCampground = await updateCampground(postData)
+        return updatedCampground
     }
 )
 
@@ -77,6 +85,24 @@ const campgroundsSlice = createSlice({
                 state.status = 'idle'
                 state.isLoading = false
                 state.campgrounds.push(action.payload)
+            })
+            .addCase(updateOneCampground.pending, (state) => {
+                state.status = 'loading'
+                state.isLoading = true
+            })
+            .addCase(updateOneCampground.rejected, (state) => {
+                state.status = 'failed'
+                state.isLoading = false
+            })
+            .addCase(updateOneCampground.fulfilled, (state, action) => {
+                state.status = 'idle'
+                state.isLoading = false
+                state.campgrounds = state.campgrounds.map((campground) => {
+                    if (campground.id === action.payload.id) {
+                        return action.payload
+                    }
+                    return campground
+                })
             })
     }
 })

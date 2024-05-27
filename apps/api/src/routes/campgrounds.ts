@@ -1,5 +1,5 @@
 import express from 'express'
-import { createCampground, getAllCmampGrounds, getCampgroundAuthor, getOneCampGround } from '../controllers/campgrounds.js'
+import { createCampground, getAllCmampGrounds, getCampgroundAuthor, getOneCampGround, updateCampground } from '../controllers/campgrounds.js'
 
 const router = express.Router()
 
@@ -8,5 +8,7 @@ router.get('/:id', getOneCampGround)
 router.get('/:id/author', getCampgroundAuthor)
 
 router.post('/create', createCampground)
+
+router.put('/:id/update', updateCampground)
 
 export default router

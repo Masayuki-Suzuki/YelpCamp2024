@@ -1,8 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
-import CampGrounds from './pages/CampGrounds'
-import CampGround from './pages/CampGround'
+import CampGrounds from './pages/campgrounds/CampGrounds'
+import CampGround from './pages/campgrounds/CampGround'
 import Home from './pages/Home.tsx'
-import CreateCampground from './pages/CreateCampground.tsx'
+import CreateCampground from './pages/campgrounds/CreateCampground.tsx'
 
 const App = () => {
   return (
@@ -12,6 +12,7 @@ const App = () => {
           <Route path="/campgrounds" element={<CampGrounds />} />
           <Route path="/campgrounds/create" element={<CreateCampground />} />
           <Route path="/campgrounds/:id" element={<CampGround />} />
+          <Route path="/campgrounds/:id/update" element={<></>} />
       </Routes>
     </>
   )
