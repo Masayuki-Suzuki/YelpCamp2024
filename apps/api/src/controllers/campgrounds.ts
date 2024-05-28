@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { prisma } from '../database.js'
 import { simpleError } from '../utilities/errorHandlingHelper.js'
+import { Campground } from '../types/database/campground.js'
 
 export const getAllCmampGrounds = async (req: Request, res: Response) => {
     try {
@@ -42,6 +43,7 @@ export const createCampground = async (req: Request, res: Response) => {
             const newPost = await prisma.campGround.create({
                 data: {
                     ...data,
+                    createdAt: new Date().toUTCString(),
                     author: {
                         connect: {
                             id
@@ -49,9 +51,7 @@ export const createCampground = async (req: Request, res: Response) => {
                     }
                 }
             })
-            res.status(200).json({
-                data: newPost
-            })
+            res.status(200).json(newPost)
         } else {
             res.status(404).json({
                 message: 'User not found',
@@ -71,7 +71,8 @@ export const createCampground = async (req: Request, res: Response) => {
 
 export const updateCampground = async (req: Request, res: Response) => {
     try {
-        const { data, postId: id } = req.body
+        const data = req.body
+        const { id } = req.params
 
         const post = await prisma.campGround.findUnique({
             where: {
@@ -80,18 +81,30 @@ export const updateCampground = async (req: Request, res: Response) => {
         })
 
         if (post) {
-            res.status(200).json({
-                data: {
-                    post,
-                    sentData: data
+            const UTCTime = new Date().toUTCString()
+            const ISOTime = new Date(UTCTime).toISOString()
+
+            const updatedPost = await prisma.campGround.update({
+                where: {
+                    id
                 },
-                message: `Post hasn't been updated yet because of testing.`
+                data: {
+                    title: data.title,
+                    description: data.description,
+                    price: data.price,
+                    location: data.location,
+                    image: data.image,
+                    updatedAt: ISOTime
+                }
             })
+
+            res.status(200).json(updatedPost)
         } else {
             res.status(404).json({
                 message: 'Post not found',
                 postID: id,
-                data: post
+                post,
+                status: 404
             })
         }
 
@@ -112,13 +125,13 @@ export const getCampgroundAuthor = async (req: Request, res: Response) => {
             } else {
                 res.status(404).json({
                     message: `Post author not found and/or Campground doesn't have an author.`,
-                    data: post
+                    post
                 })
             }
         } else {
             res.status(404).json({
                 message: 'Post not found',
-                data: post
+                post
             })
         }
     }

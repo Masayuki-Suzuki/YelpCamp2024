@@ -18,6 +18,7 @@ const EditCampground = () => {
         price: 0,
         image: 'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800'
     })
+    const [ isLoading, setIsLoading ] = useState<boolean>(false)
 
     useEffect(() => {
         if (params && params.id) {
@@ -26,6 +27,7 @@ const EditCampground = () => {
     }, [])
 
     useEffect(() => {
+        setIsLoading(true)
         if (campground) {
             setInitialValues({
                 title: campground.title,
@@ -34,23 +36,23 @@ const EditCampground = () => {
                 price: campground.price,
                 image: campground.image
             })
-        } else {
-            setInitialValues({
-                title: '',
-                location: '',
-                description: '',
-                price: 0,
-                image: 'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800'
-            })
         }
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 300)
     }, [campground])
+
+    useEffect(() => {
+        setIsLoading(loading)
+    }, [loading])
 
     return (
         <CampgroundFormPageTemplate
             initialValues={initialValues}
             heading="Edit Campground"
             mode="edit"
-            isLoading={loading}
+            postId={params && params.id}
+            isLoading={isLoading}
         />
     )
 }

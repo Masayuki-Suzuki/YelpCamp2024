@@ -11,15 +11,17 @@ import CustomFormControl from '../Molecules/FormControl'
 import FormSubmitButton from '../Atoms/forms/FormSubmitButton.tsx'
 
 type CampgroundFormProps = {
-    initialValues?: CampgroundForm,
+    initialValues?: CampgroundForm
     mode: 'create' | 'edit'
+    postId: string
 }
 
 type CampgroundFormDomProps = {
-    formik: FormikProps<Campground>,
+    formik: FormikProps<Campground>
+    postId: string
 }
 
-const CampGroundFormDom = ({ formik }: CampgroundFormDomProps) => (
+const CampGroundFormDom = ({ formik, postId }: CampgroundFormDomProps) => (
     <Box p={4}>
         <form onSubmit={formik.handleSubmit}>
             <CustomFormControl
@@ -65,12 +67,12 @@ const CampGroundFormDom = ({ formik }: CampgroundFormDomProps) => (
             <FormSubmitButton formik={formik}>Submit</FormSubmitButton>
         </form>
         <Box mt={10}>
-            <Link as={ReactRouterLink} to="/"> &lt;&lt; Back to Home</Link>
+            <Link as={ReactRouterLink} to={`/campgrounds/${postId}`}> &lt;&lt; Back to Home</Link>
         </Box>
     </Box>
 )
 
-const CampGroundForm = ({ initialValues, mode }: CampgroundFormProps) => {
+const CampGroundForm = ({ initialValues, mode, postId }: CampgroundFormProps) => {
     const dispatch: AppDispatch = useDispatch()
     const params = useParams()
 
@@ -118,7 +120,7 @@ const CampGroundForm = ({ initialValues, mode }: CampgroundFormProps) => {
         }
     })
 
-    return <CampGroundFormDom formik={formik} />
+    return <CampGroundFormDom formik={formik} postId={postId} />
 }
 
 export default CampGroundForm

@@ -9,12 +9,13 @@ type CampgroundFormPageTemplateProps = {
     initialValues: CampgroundForm
     mode: 'create' | 'edit'
     isLoading: boolean
+    postId?: string
 }
 
-const CampgroundFormPageTemplate = ({heading, initialValues, mode, isLoading}: CampgroundFormPageTemplateProps) => (
+const CampgroundFormPageTemplate = ({heading, initialValues, mode, isLoading, postId}: CampgroundFormPageTemplateProps) => (
     <Box w="100%" maxH={1280} minH="100vh" p={8}>
         <CommonMainHeading text={heading} />
-        {isLoading ? <LoadingComponent /> : <CampGroundForm initialValues={initialValues} mode={mode} />}
+        {isLoading || !postId ? <LoadingComponent /> : <CampGroundForm initialValues={initialValues} mode={mode} postId={postId} />}
     </Box>
 )
 

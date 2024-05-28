@@ -3,7 +3,6 @@ import { User } from '@prisma/client'
 import cities, { City } from './cities.js'
 import { descriptors, places } from './seedHelpers.js'
 import { Campground } from '../src/types/database/campground.js'
-import { Nullable } from '../src/types/utilities.js'
 
 const { PrismaClient } = Prisma
 const prisma = new PrismaClient()
