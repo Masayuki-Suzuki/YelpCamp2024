@@ -18,6 +18,5 @@ export const createCampground = async (postData: CampgroundPostData): Promise<Ca
 
 export const updateCampground = async ({id, data: postData}: CampgroundUpdateData): Promise<Campground> => {
     const { data } = await apiClient.put(`/campgrounds/${id}/update`, postData)
-    console.log(data)
     return data
 }

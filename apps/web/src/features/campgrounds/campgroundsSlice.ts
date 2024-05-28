@@ -97,7 +97,6 @@ const campgroundsSlice = createSlice({
             .addCase(updateOneCampground.fulfilled, (state, action) => {
                 state.status = 'idle'
                 state.isLoading = false
-                console.log(action.payload)
                 state.campgrounds = state.campgrounds.map((campground) => {
                     if (campground.id === action.payload.id) {
                         return action.payload
