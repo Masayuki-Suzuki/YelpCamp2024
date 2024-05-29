@@ -1,3 +1,3 @@
 import { CampGround } from '@prisma/client'
 
-export type Campground = Omit<CampGround, 'id'>
+export type Campground = Omit<CampGround, 'id' | 'createdAt'>

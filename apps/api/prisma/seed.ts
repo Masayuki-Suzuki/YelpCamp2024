@@ -125,7 +125,9 @@ const campgroundSeed = async () => {
                     price: getRandomPrice(),
                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor' +
                         ' incididunt ut labore et dolore magna',
-                    image: 'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800'
+                    image: 'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800',
+                    updatedAt: null,
+                    hidden: false
                 }
                 campGrounds.push(campGround)
             }

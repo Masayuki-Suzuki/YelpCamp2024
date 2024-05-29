@@ -36,10 +36,12 @@ const EditCampground = () => {
                 price: campground.price,
                 image: campground.image
             })
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 300)
+        } else {
+            setIsLoading(true)
         }
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 300)
     }, [campground])
 
     useEffect(() => {

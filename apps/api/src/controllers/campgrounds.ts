@@ -3,9 +3,14 @@ import { prisma } from '../database.js'
 import { simpleError } from '../utilities/errorHandlingHelper.js'
 import { Campground } from '../types/database/campground.js'
 
-export const getAllCmampGrounds = async (req: Request, res: Response) => {
+export const getAllCampGrounds = async (req: Request, res: Response) => {
     try {
-        const campGrounds = await prisma.campGround.findMany()
+        const campGrounds = await prisma.campGround.findMany({
+            where: {
+                hidden: false
+            }
+        })
+        console.log(campGrounds)
         res.status(200).json(campGrounds)
     }
     catch (error) {
@@ -18,7 +23,8 @@ export const getOneCampGround = async (req: Request, res: Response) => {
         const { id } = req.params
         const campGround = await prisma.campGround.findUnique({
             where: {
-                id
+                id,
+                hidden: false
             }
         })
         res.status(200).json(campGround)
@@ -43,7 +49,6 @@ export const createCampground = async (req: Request, res: Response) => {
             const newPost = await prisma.campGround.create({
                 data: {
                     ...data,
-                    createdAt: new Date().toUTCString(),
                     author: {
                         connect: {
                             id
@@ -111,6 +116,50 @@ export const updateCampground = async (req: Request, res: Response) => {
     }
     catch (error) {
         simpleError(res, error)
+    }
+}
+
+export const deleteCampground = async (req: Request, res: Response) => {
+    let id: string | undefined
+
+    if ('id' in req.body) {
+        id = req.body.id
+    } else {
+        id = req.params.id
+    }
+
+    if (id) {
+        const post = await prisma.campGround.findUnique({
+            where: {
+                id
+            }
+        })
+
+        if (post) {
+            const deletedPost = await prisma.campGround.update({
+                where: {
+                    id
+                },
+                data: {
+                    hidden: true
+                }
+            })
+
+            res.status(200).json({
+                post: deletedPost,
+                message: `Post deleted successfully. (Note: It's Soft Delete.)`
+            })
+        } else {
+            res.status(404).json({
+                message: 'Post not found',
+                post
+            })
+        }
+    } else {
+        res.status(404).json({
+            message: 'Post not found',
+            postID: id
+        })
     }
 }
 

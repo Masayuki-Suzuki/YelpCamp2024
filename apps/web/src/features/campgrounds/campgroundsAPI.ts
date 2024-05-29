@@ -20,3 +20,7 @@ export const updateCampground = async ({id, data: postData}: CampgroundUpdateDat
     const { data } = await apiClient.put(`/campgrounds/${id}/update`, postData)
     return data
 }
+
+export const deleteCampground = async (id: string): Promise<void> => {
+    await apiClient.delete(`/campgrounds/${id}/delete`)
+}

@@ -9,19 +9,24 @@ import { AppDispatch } from '../store'
 import { updateOneCampground } from '../features/campgrounds/campgroundsSlice'
 import CustomFormControl from '../Molecules/FormControl'
 import FormSubmitButton from '../Atoms/forms/FormSubmitButton.tsx'
+import FormDeleteButton from '../Atoms/forms/FormDeleteButton.tsx'
+import { useEffect, useState } from 'react'
+import Loading from '../Molecules/Loading'
 
 type CampgroundFormProps = {
     initialValues?: CampgroundForm
     mode: 'create' | 'edit'
-    postId: string
+    postId?: string
+    isLoading: boolean
 }
 
 type CampgroundFormDomProps = {
     formik: FormikProps<Campground>
     postId: string
+    mode: 'create' | 'edit'
 }
 
-const CampGroundFormDom = ({ formik, postId }: CampgroundFormDomProps) => (
+const CampGroundFormDom = ({ formik, postId, mode }: CampgroundFormDomProps) => (
     <Box p={4}>
         <form onSubmit={formik.handleSubmit}>
             <CustomFormControl
@@ -33,7 +38,6 @@ const CampGroundFormDom = ({ formik, postId }: CampgroundFormDomProps) => (
                 type="input"
                 valueName="title"
             />
-
             <CustomFormControl
                 formik={formik}
                 title="Location"
@@ -66,15 +70,22 @@ const CampGroundFormDom = ({ formik, postId }: CampgroundFormDomProps) => (
 
             <FormSubmitButton formik={formik}>Submit</FormSubmitButton>
         </form>
+
+        { mode !== 'create' && (
+            <FormDeleteButton text="Delete this Campground" />
+        )}
+
         <Box mt={10}>
             <Link as={ReactRouterLink} to={`/campgrounds/${postId}`}> &lt;&lt; Back to Home</Link>
         </Box>
     </Box>
 )
 
-const CampGroundForm = ({ initialValues, mode, postId }: CampgroundFormProps) => {
+const CampGroundForm = ({ initialValues, mode, postId, isLoading }: CampgroundFormProps) => {
     const dispatch: AppDispatch = useDispatch()
     const params = useParams()
+    const [ id, setPostId] = useState<string>('')
+    const [ loading, setLoading ] = useState<boolean>(isLoading)
 
     const DefaultInitialValues = {
         title: '',
@@ -83,6 +94,25 @@ const CampGroundForm = ({ initialValues, mode, postId }: CampgroundFormProps) =>
         price: 0,
         image: 'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800'
     }
+
+    useEffect(() => {
+        formik.setValues(initialValues || DefaultInitialValues)
+    }, [initialValues])
+
+    useEffect(() => {
+        if(postId) {
+            setPostId(postId)
+            setLoading(false)
+        } else {
+            if(params && params.id) {
+                setPostId(params.id)
+                setLoading(false)
+            } else {
+                setLoading(true)
+            }
+        }
+        setLoading(isLoading)
+    }, [postId, isLoading])
 
     const formik = useFormik<Campground>({
         initialValues: initialValues || DefaultInitialValues,
@@ -93,7 +123,7 @@ const CampGroundForm = ({ initialValues, mode, postId }: CampgroundFormProps) =>
             if (mode === 'create') {
                 // TODO: replace with user id after set User data in the store.
                 const postData: CampgroundPostData = {
-                    authorId: '66516b1689fcff6faeca12e9',
+                    authorId: '6655266e76031884d19fa0ca',
                     data: values
                 }
 
@@ -120,7 +150,10 @@ const CampGroundForm = ({ initialValues, mode, postId }: CampgroundFormProps) =>
         }
     })
 
-    return <CampGroundFormDom formik={formik} postId={postId} />
+    if (loading) {
+        return <Loading />
+    }
+    return <CampGroundFormDom formik={formik} postId={id} mode={mode} />
 }
 
 export default CampGroundForm
