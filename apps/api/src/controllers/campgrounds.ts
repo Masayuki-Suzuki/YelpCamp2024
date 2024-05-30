@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { prisma } from '../database.js'
 import { simpleError } from '../utilities/errorHandlingHelper.js'
-import { Campground } from '../types/database/campground.js'
 
 export const getAllCampGrounds = async (req: Request, res: Response) => {
     try {
@@ -10,7 +9,6 @@ export const getAllCampGrounds = async (req: Request, res: Response) => {
                 hidden: false
             }
         })
-        console.log(campGrounds)
         res.status(200).json(campGrounds)
     }
     catch (error) {

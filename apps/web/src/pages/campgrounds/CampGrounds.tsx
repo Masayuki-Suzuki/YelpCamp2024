@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Link as ReactRouterLink } from'react-router-dom'
-import { Box, Heading, Link, ListItem, Text, UnorderedList } from '@chakra-ui/react'
+import { Link as ReactRouterLink } from 'react-router-dom'
+import { Heading, Link, ListItem, Text, UnorderedList } from '@chakra-ui/react'
 import { selectCampgrounds, selectCampgroundsLoading, selectCampgroundsStatus } from '../../features/campgrounds'
 import { fetchAllCampgrounds } from '../../features/campgrounds'
 import { AppDispatch } from '../../store'
 import { FetchStatus } from '../../types/utilities'
 import { Campgrounds } from '../../types/campground'
+import PageLayout from '../../templates/PageLayout.tsx'
+import CreateCampgroundButton from '../../Atoms/Navigation/CreateCampground.tsx'
 
 type ListProps = {
     loading: boolean
@@ -18,8 +20,8 @@ type DomProps = {
     children: React.JSX.Element
 }
 
-const CreateCampGroundList = ({ loading, campgrounds } : ListProps) => {
-    if(loading) {
+const CreateCampGroundList = ({ loading, campgrounds }: ListProps) => {
+    if (loading) {
         return <Text>Loading...</Text>
     } else {
         const listItems = campgrounds.map(campground => (
@@ -39,14 +41,15 @@ const CreateCampGroundList = ({ loading, campgrounds } : ListProps) => {
 }
 
 const CampGroundsDom = ({ status, children }: DomProps) => (
-    <Box w="100%" minH="100vh" p={6} maxW={1280} mx="auto">
+    <PageLayout>
         <Heading as="h1" mb={8}>All Campgrounds</Heading>
         {children}
         <Text mt={8} mb={8}>Status: {status}</Text>
-        <Link as={ReactRouterLink} to='/'>
+        <Link as={ReactRouterLink} to="/">
             Back to Home
         </Link>
-    </Box>
+        <CreateCampgroundButton/>
+    </PageLayout>
 )
 
 const CampGrounds = () => {
@@ -61,7 +64,7 @@ const CampGrounds = () => {
 
     return (
         <CampGroundsDom status={status}>
-            <CreateCampGroundList loading={loading} campgrounds={campgrounds} />
+            <CreateCampGroundList loading={loading} campgrounds={campgrounds}/>
         </CampGroundsDom>
     )
 }

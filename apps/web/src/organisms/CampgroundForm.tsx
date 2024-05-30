@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux'
-import { Box, Link} from '@chakra-ui/react'
+import { Box, Link } from '@chakra-ui/react'
 import { Link as ReactRouterLink, useParams } from 'react-router-dom'
 import { FormikProps, useFormik } from 'formik'
 import { createCampgroundSchema } from '../libs/campgroundValidationSchema'
@@ -12,6 +12,7 @@ import FormSubmitButton from '../Atoms/forms/FormSubmitButton.tsx'
 import FormDeleteButton from '../Atoms/forms/FormDeleteButton.tsx'
 import { useEffect, useState } from 'react'
 import Loading from '../Molecules/Loading'
+import { ArrowLeftIcon } from '@chakra-ui/icons'
 
 type CampgroundFormProps = {
     initialValues?: CampgroundForm
@@ -71,12 +72,24 @@ const CampGroundFormDom = ({ formik, postId, mode }: CampgroundFormDomProps) => 
             <FormSubmitButton formik={formik}>Submit</FormSubmitButton>
         </form>
 
-        { mode !== 'create' && (
-            <FormDeleteButton text="Delete this Campground" />
+        {mode !== 'create' && (
+            <FormDeleteButton text="Delete this Campground"/>
         )}
 
         <Box mt={10}>
-            <Link as={ReactRouterLink} to={`/campgrounds/${postId}`}> &lt;&lt; Back to Home</Link>
+            <Link as={ReactRouterLink} to={`/campgrounds/${postId}`} display="flex" alignItems="center">
+                <ArrowLeftIcon mr={2}/>
+                <Box
+                    borderBottom={1}
+                    borderStyle="solid"
+                    borderColor="#000"
+                    fontSize="large"
+                    lineHeight={1}
+                    fontWeight="medium"
+                >
+                    Back
+                </Box>
+            </Link>
         </Box>
     </Box>
 )
@@ -84,8 +97,8 @@ const CampGroundFormDom = ({ formik, postId, mode }: CampgroundFormDomProps) => 
 const CampGroundForm = ({ initialValues, mode, postId, isLoading }: CampgroundFormProps) => {
     const dispatch: AppDispatch = useDispatch()
     const params = useParams()
-    const [ id, setPostId] = useState<string>('')
-    const [ loading, setLoading ] = useState<boolean>(isLoading)
+    const [id, setPostId] = useState<string>('')
+    const [loading, setLoading] = useState<boolean>(isLoading)
 
     const DefaultInitialValues = {
         title: '',
@@ -96,23 +109,20 @@ const CampGroundForm = ({ initialValues, mode, postId, isLoading }: CampgroundFo
     }
 
     useEffect(() => {
+        setLoading(true)
         formik.setValues(initialValues || DefaultInitialValues)
+        setLoading(false)
     }, [initialValues])
 
     useEffect(() => {
-        if(postId) {
+        if (postId) {
             setPostId(postId)
-            setLoading(false)
         } else {
-            if(params && params.id) {
+            if (params && params.id) {
                 setPostId(params.id)
-                setLoading(false)
-            } else {
-                setLoading(true)
             }
         }
-        setLoading(isLoading)
-    }, [postId, isLoading])
+    }, [postId])
 
     const formik = useFormik<Campground>({
         initialValues: initialValues || DefaultInitialValues,
@@ -151,9 +161,9 @@ const CampGroundForm = ({ initialValues, mode, postId, isLoading }: CampgroundFo
     })
 
     if (loading) {
-        return <Loading />
+        return <Loading/>
     }
-    return <CampGroundFormDom formik={formik} postId={id} mode={mode} />
+    return <CampGroundFormDom formik={formik} postId={id} mode={mode}/>
 }
 
 export default CampGroundForm

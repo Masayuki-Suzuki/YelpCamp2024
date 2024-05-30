@@ -6,17 +6,17 @@ import CreateCampground from './pages/campgrounds/CreateCampground.tsx'
 import EditCampground from './pages/campgrounds/EditCampground.tsx'
 
 const App = () => {
-  return (
-    <>
-      <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/campgrounds" element={<CampGrounds />} />
-          <Route path="/campgrounds/create" element={<CreateCampground />} />
-          <Route path="/campgrounds/:id" element={<CampGround />} />
-          <Route path="/campgrounds/:id/update" element={<EditCampground />} />
-      </Routes>
-    </>
-  )
+    return (
+        <>
+            <Routes>
+                <Route path="/" element={<Home/>}/>
+                <Route path="/campgrounds" element={<CampGrounds/>}/>
+                <Route path="/campgrounds/create" element={<CreateCampground/>}/>
+                <Route path="/campgrounds/:id" element={<CampGround/>}/>
+                <Route path="/campgrounds/:id/update" element={<EditCampground/>}/>
+            </Routes>
+        </>
+    )
 }
 
 export default App

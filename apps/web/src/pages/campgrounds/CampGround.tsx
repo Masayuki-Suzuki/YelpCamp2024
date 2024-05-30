@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams, Link as ReactRouterLink } from 'react-router-dom'
 import { AppDispatch } from '../../store'
 import { selectCampground, selectCampgroundsLoading, fetchOneCampground } from '../../features/campgrounds'
-import { Box, Divider, Heading, Text, Link } from '@chakra-ui/react'
+import { Divider, Heading, Text, Link } from '@chakra-ui/react'
 import { Campground } from '../../types/campground.ts'
 import { Nullable } from '../../types/utilities.ts'
+import PageLayout from '../../templates/PageLayout.tsx'
 
 type DomProps = {
     children: JSX.Element
@@ -18,26 +19,26 @@ type ViewProps = {
 }
 
 const CampGroundDom = ({ children }: DomProps) => (
-    <Box w="100%" maxH={1280} minH="100vh" p={8} mx="auto">
-        <Heading as="h1" size='2xl' pb={4}>Show Campground</Heading>
+    <PageLayout>
+        <Heading as="h1" size="2xl" pb={4}>Show Campground</Heading>
         <Divider mt={4} mb={6} borderColor="#3c3c3c"/>
-        { children }
+        {children}
         <Text mt={8}>
-            <Link as={ReactRouterLink} to='/campgrounds'>
+            <Link as={ReactRouterLink} to="/campgrounds">
                 Back to List
             </Link>
         </Text>
-    </Box>
+    </PageLayout>
 )
 
 const CampgroundView = ({ id, campground, loading }: ViewProps) => {
     if (loading) {
         return <Text>Loading...</Text>
-    } else if(campground) {
+    } else if (campground) {
         return (
             <>
                 <Heading as="h2" mb={3}>{campground.title}</Heading>
-                <Text fontSize='xl' textColor="#777">{campground.location}</Text>
+                <Text fontSize="xl" textColor="#777">{campground.location}</Text>
                 <Text mt={8}>
                     <Link as={ReactRouterLink} to={`/campgrounds/${id}/update`}>
                         Edit Campground
@@ -50,13 +51,12 @@ const CampgroundView = ({ id, campground, loading }: ViewProps) => {
     }
 }
 
-
 const CampGround = () => {
     const dispatch: AppDispatch = useDispatch()
     const campground = useSelector(selectCampground)
     const loading = useSelector(selectCampgroundsLoading)
     const params = useParams()
-    const [ paramsId, setParamsId ] = useState<string>('')
+    const [paramsId, setParamsId] = useState<string>('')
 
     useEffect(() => {
         if (params && params.id) {
@@ -67,7 +67,7 @@ const CampGround = () => {
 
     return (
         <CampGroundDom>
-            <CampgroundView id={paramsId} campground={campground} loading={loading} />
+            <CampgroundView id={paramsId} campground={campground} loading={loading}/>
         </CampGroundDom>
     )
 }
