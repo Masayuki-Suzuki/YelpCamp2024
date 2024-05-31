@@ -4,7 +4,7 @@ import Logo from '../Atoms/Logo'
 import HeaderNavList from '../Molecules/HeaderNavList.tsx'
 
 const HeaderNav = () => (
-    <Box as="nav" position="fixed" w="100%" bgColor="#2c2c2c">
+    <Box as="nav" position="fixed" w="100%" bgColor="#2c2c2c" zIndex={200}>
         <Flex justifyContent="space-between" alignItems="center" px={12} py={4} maxW={1280} mx="auto">
             <Link as={ReactRouterLink} to="/" _hover={{ textDecoration: 'none' }}>
                 <Logo/>
