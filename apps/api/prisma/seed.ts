@@ -7,6 +7,30 @@ import { Campground } from '../src/types/database/campground.js'
 const { PrismaClient } = Prisma
 const prisma = new PrismaClient()
 
+const seedImages = [
+    'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800',
+    'https://images.unsplash.com/photo-1534880606858-29b0e8a24e8d?q=800',
+    'https://images.unsplash.com/photo-1533575770077-052fa2c609fc?q=800',
+    'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?q=800',
+    'https://images.unsplash.com/photo-1503265192943-9d7eea6fc77a?q=800',
+    'https://images.unsplash.com/photo-1525811902-f2342640856e?q=800',
+    'https://images.unsplash.com/photo-1586890662737-9f107825e147?q=800',
+    'https://images.unsplash.com/photo-1619677394722-6397960e590b?q=800',
+    'https://images.unsplash.com/photo-1488790881751-9068aa742b9b?q=800',
+    'https://images.unsplash.com/photo-1524007769096-2dad448565c9?q=800',
+    'https://images.unsplash.com/photo-1557292916-eaa52c7e5939?q=800',
+    'https://images.unsplash.com/photo-1534187886935-1e1236e856c3?q=800',
+    'https://images.unsplash.com/photo-1584345015538-213f90f9ccbc?q=800',
+    'https://images.unsplash.com/photo-1455763916899-e8b50eca9967?q=800',
+    'https://images.unsplash.com/photo-1594471233145-1e2b579c5e9d?q=800',
+    'https://images.unsplash.com/photo-1540329957110-b87b06f5718e?q=800',
+    'https://images.unsplash.com/photo-1540329957110-b87b06f5718e?q=800',
+    'https://images.unsplash.com/photo-1688380303726-2a3f82354686?q=800',
+    'https://plus.unsplash.com/premium_photo-1682094106870-48555b144a59?q=800',
+    'https://images.unsplash.com/photo-1688380303719-bf812819080b?q=800',
+    'https://images.unsplash.com/photo-1688380303719-bf812819080b?q=800'
+]
+
 const userSeed = async () => {
     console.log('Seeding user database...')
     try {
@@ -109,14 +133,15 @@ const campgroundSeed = async () => {
             console.info('Creating 50 campgrounds...')
             for (let i = 0; i < 50; i++) {
                 const random1000 = Math.floor(Math.random() * 1000)
-
                 const cityData: City | undefined = cities[random1000]
-
                 let location = ''
 
                 if (cityData) {
                     location = `${cityData.city}, ${cityData.state}`
                 }
+
+                const random20 = Math.floor(Math.random() * 20)
+                const image = seedImages[random20] as string
 
                 const campGround: Campground = {
                     location,
@@ -125,7 +150,7 @@ const campgroundSeed = async () => {
                     price: getRandomPrice(),
                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor' +
                         ' incididunt ut labore et dolore magna',
-                    image: 'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800',
+                    image,
                     updatedAt: null,
                     hidden: false
                 }

@@ -1,4 +1,4 @@
-import { Campground, Campgrounds, CampgroundPostData, CampgroundUpdateData } from '../../types/campground'
+import { Campground, CampgroundPostData, Campgrounds, CampgroundUpdateData } from '../../types/campground'
 import apiClient from '../../libs/apiClient'
 
 export const fetchCampgrounds = async (): Promise<Campgrounds> => {
@@ -12,15 +12,15 @@ export const fetchCampground = async (id: string): Promise<Campground> => {
 }
 
 export const createCampground = async (postData: CampgroundPostData): Promise<Campground> => {
-    const { data } = await apiClient.post('/campgrounds/create', postData)
+    const { data } = await apiClient.post('/campgrounds', postData)
     return data
 }
 
-export const updateCampground = async ({id, data: postData}: CampgroundUpdateData): Promise<Campground> => {
-    const { data } = await apiClient.put(`/campgrounds/${id}/update`, postData)
+export const updateCampground = async ({ id, data: postData }: CampgroundUpdateData): Promise<Campground> => {
+    const { data } = await apiClient.put(`/campgrounds/${id}`, postData)
     return data
 }
 
 export const deleteCampground = async (id: string): Promise<void> => {
-    await apiClient.delete(`/campgrounds/${id}/delete`)
+    await apiClient.delete(`/campgrounds/${id}`)
 }

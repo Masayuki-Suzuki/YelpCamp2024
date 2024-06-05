@@ -1,9 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import cors from 'cors'
-import morgan from 'morgan'
 import { initialiseDatabase } from './database.js'
-import { routerConfigs } from './routes/index.js'
+import { serverConfig } from './server-config.js'
 
 dotenv.config()
 
@@ -14,18 +12,7 @@ const initServer = async () => {
     const app = express()
 
     await initialiseDatabase()
-
-    app.use(morgan('dev'))
-
-    app.use(cors({
-        origin: 'http://localhost:3000',
-        credentials: true,
-        optionsSuccessStatus: 200
-    }))
-
-    app.use(express.json())
-
-    routerConfigs(app)
+    serverConfig(app)
 
     app.listen(PORT, () => {
         console.log(`Server running at http://localhost:${PORT}`)
@@ -35,5 +22,3 @@ const initServer = async () => {
 }
 
 void initServer()
-
-export const viteNodeApp = app

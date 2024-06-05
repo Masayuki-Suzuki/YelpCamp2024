@@ -133,7 +133,7 @@ const CampGroundForm = ({ initialValues, mode, postId, isLoading }: CampgroundFo
             if (mode === 'create') {
                 // TODO: replace with user id after set User data in the store.
                 const postData: CampgroundPostData = {
-                    authorId: '6655266e76031884d19fa0ca',
+                    authorId: '6655266e76031884d19fa0cb',
                     data: values
                 }
 

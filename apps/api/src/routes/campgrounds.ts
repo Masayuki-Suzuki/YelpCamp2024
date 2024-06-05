@@ -7,17 +7,19 @@ import {
     getOneCampGround,
     updateCampground
 } from '../controllers/campgrounds.js'
+import { catchAsync } from '../utilities/errorHandlingHelper.js'
 
 const router = express.Router()
 
-router.get('/', getAllCampGrounds)
-router.get('/:id', getOneCampGround)
+router.route('/')
+    .get(catchAsync(getAllCampGrounds))
+    .post(catchAsync(createCampground))
+
+router.route('/:id')
+    .get(catchAsync(getOneCampGround))
+    .put(catchAsync(updateCampground))
+    .delete(catchAsync(deleteCampground))
+
 router.get('/:id/author', getCampgroundAuthor)
-
-router.post('/create', createCampground)
-
-router.put('/:id/update', updateCampground)
-
-router.delete('/:id/delete', deleteCampground)
 
 export default router

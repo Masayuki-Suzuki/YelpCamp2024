@@ -1,120 +1,109 @@
 import { Request, Response } from 'express'
 import { prisma } from '../database.js'
-import { simpleError } from '../utilities/errorHandlingHelper.js'
+import { AppError } from '../utilities/errorHandlingHelper.js'
 
 export const getAllCampGrounds = async (req: Request, res: Response) => {
-    try {
-        const campGrounds = await prisma.campGround.findMany({
-            where: {
-                hidden: false
-            }
-        })
-        res.status(200).json(campGrounds)
+    const campGrounds = await prisma.campGround.findMany({
+        where: {
+            hidden: false
+        }
+    })
+
+    if (!campGrounds) {
+        throw new AppError('Campgrounds not found', 404)
     }
-    catch (error) {
-        simpleError(res, error)
-    }
+
+    res.status(200).json(campGrounds)
 }
 
 export const getOneCampGround = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params
-        const campGround = await prisma.campGround.findUnique({
-            where: {
-                id,
-                hidden: false
-            }
-        })
-        res.status(200).json(campGround)
+    const { id } = req.params
+    const campGround = await prisma.campGround.findUnique({
+        where: {
+            id,
+            hidden: false
+        }
+    })
+
+    if (!campGround) {
+        throw new AppError('Campground not found', 404)
     }
-    catch (error) {
-        simpleError(res, error)
-    }
+
+    res.status(200).json(campGround)
 }
 
 export const createCampground = async (req: Request, res: Response) => {
-    try {
-        const { authorId: id, data } = req.body
+    const { authorId: id, data } = req.body
 
-        // Check authorId user existence
-        const user = await prisma.user.findUnique({
-            where: {
-                id
-            }
-        })
+    if (!id) {
+        throw new AppError('Post ID is required.', 400)
+    }
 
-        if (user) {
-            const newPost = await prisma.campGround.create({
-                data: {
-                    ...data,
-                    author: {
-                        connect: {
-                            id
-                        }
+    if (!data) {
+        throw new AppError('Post data is required.', 400)
+    }
+
+    // Check authorId user existence
+    const user = await prisma.user.findUnique({
+        where: {
+            id
+        }
+    })
+
+    if (user) {
+        const newPost = await prisma.campGround.create({
+            data: {
+                ...data,
+                author: {
+                    connect: {
+                        id
                     }
                 }
-            })
-            res.status(200).json(newPost)
-        } else {
-            res.status(404).json({
-                message: 'User not found',
-                authorId: req.body.authorId
-            })
-        }
-    }
-    catch (error) {
-        simpleError(res, error)
-        res.status(500).json({
-            message: 'Internal server error.',
-            authorId: req.body.authorId,
-            error
+            }
         })
+        res.status(200).json(newPost)
+    } else {
+        throw new AppError('User not authorised.', 401)
     }
 }
 
 export const updateCampground = async (req: Request, res: Response) => {
-    try {
-        const data = req.body
-        const { id } = req.params
+    const data = req.body
+    const { id } = req.params
 
-        const post = await prisma.campGround.findUnique({
+    if (!id) {
+        throw new AppError('Post ID is required.', 400)
+    }
+
+    const post = await prisma.campGround.findUnique({
+        where: {
+            id
+        }
+    })
+
+    if (post) {
+        const UTCTime = new Date().toUTCString()
+        const ISOTime = new Date(UTCTime).toISOString()
+
+        const updatedPost = await prisma.campGround.update({
             where: {
                 id
+            },
+            data: {
+                title: data.title,
+                description: data.description,
+                price: data.price,
+                location: data.location,
+                image: data.image,
+                updatedAt: ISOTime
             }
         })
 
-        if (post) {
-            const UTCTime = new Date().toUTCString()
-            const ISOTime = new Date(UTCTime).toISOString()
-
-            const updatedPost = await prisma.campGround.update({
-                where: {
-                    id
-                },
-                data: {
-                    title: data.title,
-                    description: data.description,
-                    price: data.price,
-                    location: data.location,
-                    image: data.image,
-                    updatedAt: ISOTime
-                }
-            })
-
-            res.status(200).json(updatedPost)
-        } else {
-            res.status(404).json({
-                message: 'Post not found',
-                postID: id,
-                post,
-                status: 404
-            })
-        }
-
+        res.status(200).json(updatedPost)
+    } else {
+        throw new AppError('Post not found', 404)
     }
-    catch (error) {
-        simpleError(res, error)
-    }
+
 }
 
 export const deleteCampground = async (req: Request, res: Response) => {
@@ -145,44 +134,33 @@ export const deleteCampground = async (req: Request, res: Response) => {
 
             res.status(200).json({
                 post: deletedPost,
-                message: `Post deleted successfully. (Note: It's Soft Delete.)`
+                message: `Post deleted successfully.`
             })
         } else {
-            res.status(404).json({
-                message: 'Post not found',
-                post
-            })
+            throw new AppError('Post not found', 404)
         }
     } else {
-        res.status(404).json({
-            message: 'Post not found',
-            postID: id
-        })
+        throw new AppError('Post ID is required.', 400)
     }
 }
 
 export const getCampgroundAuthor = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params
-        const post = await prisma.campGround.findUnique({ where: { id }, include: { author: true } })
+    const { id } = req.params
 
-        if (post) {
-            if (post.author) {
-                res.status(200).json(post.author)
-            } else {
-                res.status(404).json({
-                    message: `Post author not found and/or Campground doesn't have an author.`,
-                    post
-                })
-            }
+    if (!id) {
+        throw new AppError('Post ID is required.', 400)
+    }
+
+    const post = await prisma.campGround.findUnique({ where: { id }, include: { author: true } })
+
+    if (post) {
+        if (post.author) {
+            res.status(200).json(post.author)
         } else {
-            res.status(404).json({
-                message: 'Post not found',
-                post
-            })
+            throw new AppError(`Post author not found and/or Campground doesn\'t have an author.`, 404)
         }
+    } else {
+        throw new AppError('Post not found.', 404)
     }
-    catch (error) {
-        simpleError(res, error)
-    }
+
 }
