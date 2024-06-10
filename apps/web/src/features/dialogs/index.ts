@@ -2,7 +2,8 @@ import dialogReducer from './dialogSlices'
 
 export {
     selectDialogStatus,
-    selectDialogData
+    selectDialogData,
+    selectDialogStatusCode
 } from './dialogSelectors'
 
 export {

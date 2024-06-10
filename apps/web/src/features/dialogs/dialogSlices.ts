@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-type AlertDialogState = {
+export type AlertDialogState = {
     isOpen: boolean
     icon: 'success' | 'warning' | 'error' | 'info'
     status: number,

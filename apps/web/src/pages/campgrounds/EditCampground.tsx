@@ -2,17 +2,19 @@ import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch } from '../../store'
 import { fetchOneCampground, selectCampground, selectCampgroundsLoading } from '../../features/campgrounds'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import CampgroundFormPageTemplate from '../../templates/CampgroundFormPageTemp'
 import { CampgroundForm } from '../../types/campground.ts'
 import AlertDialog from '../../organisms/AlertDialog.tsx'
-import { closeAlertDialog } from '../../features/dialogs'
+import { closeAlertDialog, selectDialogStatusCode } from '../../features/dialogs'
 import { Button } from '@chakra-ui/react'
 
 const EditCampground = () => {
     const dispatch: AppDispatch = useDispatch()
     const campground = useSelector(selectCampground)
     const loading = useSelector(selectCampgroundsLoading)
+    const statusCode = useSelector(selectDialogStatusCode)
+    const navigate = useNavigate()
     const params = useParams()
     const [initialValues, setInitialValues] = useState<CampgroundForm>({
         title: '',
@@ -22,6 +24,15 @@ const EditCampground = () => {
         image: 'https://images.unsplash.com/photo-1564577160324-112d603f750f?q=800'
     })
     const [isLoading, setIsLoading] = useState<boolean>(false)
+
+    const onClose = () => {
+        if (statusCode === 200) {
+            dispatch(closeAlertDialog())
+            navigate(`/campgrounds/${params.id}`)
+        } else {
+            dispatch(closeAlertDialog())
+        }
+    }
 
     useEffect(() => {
         if (params && params.id) {
@@ -60,8 +71,8 @@ const EditCampground = () => {
                 postId={params && params.id}
                 isLoading={isLoading}
             />
-            <AlertDialog>
-                <Button colorScheme="gray" onClick={() => dispatch(closeAlertDialog())}>Close</Button>
+            <AlertDialog onClose={onClose}>
+                <Button colorScheme="gray" onClick={onClose}>Close</Button>
             </AlertDialog>
         </>
 

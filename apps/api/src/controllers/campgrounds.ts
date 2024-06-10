@@ -87,8 +87,8 @@ export const updateCampground = async (req: Request, res: Response) => {
 
     if (!id) {
         throw new AppError('Post ID is required.', 400)
-    } else if (!(/^[0-9a-f]{12}$/i.test(id))) {
-        throw new AppError('Provided ID representation must be hex string and exactly 12 bytes/character.', 400)
+    } else if (!(/^[0-9a-f]{24}$/i.test(id))) {
+        throw new AppError('The ID provided is incorrect. Please try again later or contact the administrator.', 400)
     }
 
     const post = await prisma.campGround.findUnique({

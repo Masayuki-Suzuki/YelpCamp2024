@@ -1,7 +1,6 @@
 import express, { Express, Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
-import { AppError, simpleError } from './utilities/errorHandlingHelper.js'
 import { routerConfigs } from './routes/index.js'
 
 export const serverConfig = (app: Express) => {

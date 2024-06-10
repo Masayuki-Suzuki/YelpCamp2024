@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react'
 import Loading from '../Molecules/Loading'
 import { ArrowLeftIcon } from '@chakra-ui/icons'
 import { setDialogData } from '../features/dialogs'
+import { AlertDialogState } from '../features/dialogs/dialogSlices.ts'
 
 type CampgroundFormProps = {
     initialValues?: CampgroundForm
@@ -138,7 +139,16 @@ const CampGroundForm = ({ initialValues, mode, postId, isLoading }: CampgroundFo
                     data: values
                 }
 
-                dispatch(pushNewCampground(postData)).unwrap().catch((err) => {
+                dispatch(pushNewCampground(postData)).unwrap().then(() => {
+                    const dialogData: AlertDialogState = {
+                        isOpen: true,
+                        icon: 'success',
+                        message: 'Campground created successfully.',
+                        header: 'Success!',
+                        status: 200
+                    }
+                    dispatch(setDialogData(dialogData))
+                }).catch((err) => {
                     dispatch(setDialogData(err))
                 })
             } else {
@@ -156,7 +166,16 @@ const CampGroundForm = ({ initialValues, mode, postId, isLoading }: CampgroundFo
                     data: values
                 }
 
-                dispatch(updateOneCampground(postData)).unwrap().catch((err) => {
+                dispatch(updateOneCampground(postData)).unwrap().then(() => {
+                    const dialogData: AlertDialogState = {
+                        isOpen: true,
+                        icon: 'success',
+                        message: 'Campground updated successfully.',
+                        header: 'Success!',
+                        status: 200
+                    }
+                    dispatch(setDialogData(dialogData))
+                }).catch((err) => {
                     dispatch(setDialogData(err))
                 })
             }
