@@ -5,6 +5,9 @@ import { fetchOneCampground, selectCampground, selectCampgroundsLoading } from '
 import { useParams } from 'react-router-dom'
 import CampgroundFormPageTemplate from '../../templates/CampgroundFormPageTemp'
 import { CampgroundForm } from '../../types/campground.ts'
+import AlertDialog from '../../organisms/AlertDialog.tsx'
+import { closeAlertDialog } from '../../features/dialogs'
+import { Button } from '@chakra-ui/react'
 
 const EditCampground = () => {
     const dispatch: AppDispatch = useDispatch()
@@ -49,13 +52,19 @@ const EditCampground = () => {
     }, [loading])
 
     return (
-        <CampgroundFormPageTemplate
-            initialValues={initialValues}
-            heading="Edit Campground"
-            mode="edit"
-            postId={params && params.id}
-            isLoading={isLoading}
-        />
+        <>
+            <CampgroundFormPageTemplate
+                initialValues={initialValues}
+                heading="Edit Campground"
+                mode="edit"
+                postId={params && params.id}
+                isLoading={isLoading}
+            />
+            <AlertDialog>
+                <Button colorScheme="gray" onClick={() => dispatch(closeAlertDialog())}>Close</Button>
+            </AlertDialog>
+        </>
+
     )
 }
 

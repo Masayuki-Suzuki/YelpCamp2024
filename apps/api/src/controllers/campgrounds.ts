@@ -7,10 +7,13 @@ export const getAllCampGrounds = async (req: Request, res: Response) => {
         where: {
             hidden: false
         }
+    }).catch((err) => {
+        console.log(err)
+        throw new AppError('Campgrounds not found.', 404)
     })
 
     if (!campGrounds) {
-        throw new AppError('Campgrounds not found', 404)
+        throw new AppError('Campgrounds not found.', 404)
     }
 
     res.status(200).json(campGrounds)
@@ -18,15 +21,23 @@ export const getAllCampGrounds = async (req: Request, res: Response) => {
 
 export const getOneCampGround = async (req: Request, res: Response) => {
     const { id } = req.params
+
+    if (!id) {
+        throw new AppError('Post ID is required.', 400)
+    }
+
     const campGround = await prisma.campGround.findUnique({
         where: {
             id,
             hidden: false
         }
+    }).catch((err) => {
+        console.log(err)
+        throw new AppError('Campground not found.', 404)
     })
 
     if (!campGround) {
-        throw new AppError('Campground not found', 404)
+        throw new AppError('Campground not found.', 404)
     }
 
     res.status(200).json(campGround)
@@ -48,6 +59,9 @@ export const createCampground = async (req: Request, res: Response) => {
         where: {
             id
         }
+    }).catch((err) => {
+        console.log(err)
+        throw new AppError('User not authorised.', 401)
     })
 
     if (user) {
@@ -73,12 +87,17 @@ export const updateCampground = async (req: Request, res: Response) => {
 
     if (!id) {
         throw new AppError('Post ID is required.', 400)
+    } else if (!(/^[0-9a-f]{12}$/i.test(id))) {
+        throw new AppError('Provided ID representation must be hex string and exactly 12 bytes/character.', 400)
     }
 
     const post = await prisma.campGround.findUnique({
         where: {
             id
         }
+    }).catch((err) => {
+        console.log(err)
+        throw new AppError('Post not found.', 404)
     })
 
     if (post) {
@@ -101,7 +120,7 @@ export const updateCampground = async (req: Request, res: Response) => {
 
         res.status(200).json(updatedPost)
     } else {
-        throw new AppError('Post not found', 404)
+        throw new AppError('Post not found.', 404)
     }
 
 }
@@ -137,7 +156,7 @@ export const deleteCampground = async (req: Request, res: Response) => {
                 message: `Post deleted successfully.`
             })
         } else {
-            throw new AppError('Post not found', 404)
+            throw new AppError('Post not found.', 404)
         }
     } else {
         throw new AppError('Post ID is required.', 400)

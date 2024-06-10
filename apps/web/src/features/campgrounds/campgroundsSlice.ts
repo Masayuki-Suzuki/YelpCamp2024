@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { CampgroundPostData, CampgroundsState, CampgroundUpdateData } from '../../types/campground.ts'
-import { fetchCampgrounds, fetchCampground, createCampground, updateCampground, deleteCampground } from './campgroundsAPI'
+import { createCampground, deleteCampground, fetchCampground, fetchCampgrounds, updateCampground } from './campgroundsAPI'
 
 const initialState: CampgroundsState = {
     campgrounds: [],
@@ -9,43 +9,89 @@ const initialState: CampgroundsState = {
     status: 'idle'
 }
 
+const getRejectValue = (err: any) => {
+    let rejectValue = {
+        isOpen: true,
+        icon: 'error',
+        status: 400,
+        message: 'Something went wrong...'
+    }
+
+    if ('response' in err && 'data' in err.response && 'error' in err.response.data) {
+        rejectValue = {
+            ...rejectValue,
+            message: err.response.data.error.message,
+            status: err.response.status
+        }
+    } else if (err instanceof Error) {
+        rejectValue = { ...rejectValue, message: err.message }
+    }
+
+    return rejectValue
+}
+
 export const fetchAllCampgrounds = createAsyncThunk(
     'campgrounds/fetchAllCampgrounds',
-    async () => {
-        const campgrounds = await fetchCampgrounds()
-        return campgrounds
+    async (_, { rejectWithValue }) => {
+        try {
+            const campgrounds = await fetchCampgrounds()
+            return campgrounds
+        }
+        catch (err: any) {
+            return rejectWithValue(getRejectValue(err))
+        }
     }
 )
 
 export const fetchOneCampground = createAsyncThunk(
     'campgrounds/fetchOneCampground',
-    async (id: string) => {
-        const campground = await fetchCampground(id)
-        return campground
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const campground = await fetchCampground(id)
+            return campground
+        }
+        catch (err: any) {
+            return rejectWithValue(getRejectValue(err))
+        }
     }
 )
 
 export const pushNewCampground = createAsyncThunk(
     'campgrounds/createCampground',
-    async (postData: CampgroundPostData) => {
-        const newCampground = await createCampground(postData)
-        return newCampground
+    async (postData: CampgroundPostData, { rejectWithValue }) => {
+        try {
+            const newCampground = await createCampground(postData)
+            return newCampground
+        }
+        catch (err: any) {
+            return rejectWithValue(getRejectValue(err))
+        }
     }
 )
 
 export const updateOneCampground = createAsyncThunk(
     'campgrounds/updateCampground',
-    async (postData: CampgroundUpdateData) => {
-        const updatedCampground = await updateCampground(postData)
-        return updatedCampground
+    async (postData: CampgroundUpdateData, { rejectWithValue }) => {
+        try {
+            const updatedCampground = await updateCampground(postData)
+            return updatedCampground
+        }
+        catch (err: any) {
+            return rejectWithValue(getRejectValue(err))
+        }
     }
 )
 
 export const deleteOneCampground = createAsyncThunk(
     'campgrounds/deleteCampground',
-    async (id: string) => {
-        const deletedCampground = await deleteCampground(id)
-        return deletedCampground
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const deletedCampground = await deleteCampground(id)
+            return deletedCampground
+        }
+        catch (err: any) {
+            return rejectWithValue(getRejectValue(err))
+        }
     }
 )
 
@@ -125,7 +171,7 @@ const campgroundsSlice = createSlice({
                 state.status = 'idle'
                 state.isLoading = false
                 state.campgrounds = state.campgrounds.filter((campground) => {
-                    if(campground && state.campground) {
+                    if (campground && state.campground) {
                         return campground.id !== state.campground.id
                     } else {
                         return false

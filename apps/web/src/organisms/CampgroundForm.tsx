@@ -8,11 +8,12 @@ import { pushNewCampground } from '../features/campgrounds'
 import { AppDispatch } from '../store'
 import { updateOneCampground } from '../features/campgrounds/campgroundsSlice'
 import CustomFormControl from '../Molecules/FormControl'
-import FormSubmitButton from '../Atoms/forms/FormSubmitButton.tsx'
-import FormDeleteButton from '../Atoms/forms/FormDeleteButton.tsx'
+import FormSubmitButton from '../Atoms/forms/FormSubmitButton'
+import FormDeleteButton from '../Atoms/forms/FormDeleteButton'
 import { useEffect, useState } from 'react'
 import Loading from '../Molecules/Loading'
 import { ArrowLeftIcon } from '@chakra-ui/icons'
+import { setDialogData } from '../features/dialogs'
 
 type CampgroundFormProps = {
     initialValues?: CampgroundForm
@@ -137,7 +138,9 @@ const CampGroundForm = ({ initialValues, mode, postId, isLoading }: CampgroundFo
                     data: values
                 }
 
-                dispatch(pushNewCampground(postData))
+                dispatch(pushNewCampground(postData)).unwrap().catch((err) => {
+                    dispatch(setDialogData(err))
+                })
             } else {
                 let postId = ''
 
@@ -153,7 +156,9 @@ const CampGroundForm = ({ initialValues, mode, postId, isLoading }: CampgroundFo
                     data: values
                 }
 
-                dispatch(updateOneCampground(postData))
+                dispatch(updateOneCampground(postData)).unwrap().catch((err) => {
+                    dispatch(setDialogData(err))
+                })
             }
 
             actions.setSubmitting(false)
